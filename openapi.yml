@@ -1,19 +1,15 @@
 openapi: 3.0.3
 info:
-  title: PlantExchange - Gang of Fork
+  title: Verwaltungscloud Antragsportal
   description: |-
-    This is the first version of the API running the PlantExchange anonymous crypto-currency marketplace.
-    It will be rebuilt decentralized in the first half of 2023.
-    Learn more about this application by clicking on the links below.
+    Das Verwaltungscloud Antragsportal ermöglicht das Stellen von Onlineanträgen für integrierte Fachverfahren.
     
   contact:
-    email: mail@gang-of-fork.de
+    email: info@verwaltungscloud.sh
   version: 0.0.1
-externalDocs:
-  description: Find out more about this application
-  url: https://plantexchange.gang-of-fork.de
+
 servers:
-  - url: https://api.plantexchange.gang-of-fork.de/api/v1
+  - url: https://api.antrag.dev.verwaltungscloud.sh/api/v1
 tags:
   - name: auth
     description: Everything about registration and authentication
