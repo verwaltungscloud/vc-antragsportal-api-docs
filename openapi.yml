@@ -110,14 +110,41 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  # TODO Route for getting a stepschema
+  # TODO Route to get a single transaction with auth
   
-  /transaction:
+  /transactionschemas/{transactionSchemaAlias}/step/{stepAlias}/transaction/{transactionId}:
+    get:
+      tags:
+        - transactionschemas
+      parameters:
+        - $ref: '#/components/parameters/transactionId'
+        - $ref: '#/components/parameters/stepAlias'
+        - $ref: '#/components/parameters/transactionSchemaAlias'
+      summary: render a stepschema
+      description: renders the schema for a step of a transactionschema to fit the current state of the transaction
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  stepSchema:
+                    $ref: '#/components/schemas/StepSchema'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      
+  
+  
+  /transactions:
     post: 
       tags: 
         - transactions
       summary: create a transaction
-      description: creates a transaction for the given transactionSchema. Returns the created transactionId and the first StepSchema (Inspect Schema to see the variations of StepSchema like StepSchemaAjv).
+      description: creates a transaction for the given transactionSchema. Returns the created transactionId and the first rendered StepSchema (Inspect Schema to see the variations of StepSchema like StepSchemaAjv).
       requestBody:
         content:
           application/json:
@@ -134,7 +161,7 @@ paths:
                   transactionId: 
                     format: Mongo ObjectId
                     example: 507f1f77bcf86cd799439011
-                  nextStepSchema:
+                  stepSchema:
                     $ref: '#/components/schemas/StepSchema'
         400:
           $ref: '#/components/responses/BadRequest'
@@ -142,23 +169,13 @@ paths:
           $ref: '#/components/responses/InternalServerError'
           
   # TODO add auth
-  /transaction/{transactionId}/step/{stepalias}:
+  /transactions/{transactionId}/step/{stepAlias}:
     post:
       tags:
-        - transaction
+        - transactions
       parameters:
-        - in: path
-          name: transactionId
-          required: true
-          schema:
-            type: string
-            format: Mongo ObjectId
-        - in: path
-          name: stepalias
-          required: true
-          schema:
-            type: string
-            description: alias of the step from the stepschema that the data is for
+        - $ref: '#/components/parameters/transactionId'
+        - $ref: '#/components/parameters/stepAlias'
       requestBody:
         content:
           application/json:
@@ -187,20 +204,10 @@ paths:
           
     get:
       tags:
-        - transaction
+        - transactions
       parameters:
-        - in: path
-          name: transactionId
-          required: true
-          schema:
-            type: string
-            format: Mongo ObjectId
-        - in: path
-          name: stepalias
-          required: true
-          schema:
-            type: string
-            description: alias of the step from the stepschema that the data is for
+        - $ref: '#/components/parameters/transactionId'
+        - $ref: '#/components/parameters/stepAlias'
       responses:
         200:
           description: OK
@@ -214,17 +221,13 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
     
-  /transaction/{transactionId}/submit:
-    get:
+    
+  /transactions/{transactionId}/submit:
+    put:
       tags:
-        - transaction
+        - transactions
       parameters:
-        - in: path
-          name: transactionId
-          required: true
-          schema:
-            type: string
-            format: Mongo ObjectId
+        - $ref: '#/components/parameters/transactionId'
       responses:
         200:
           description: OK
@@ -283,6 +286,32 @@ components:
                 type: string
                 example: 'Internal Server Error'
                 description: error message
+  
+  parameters: 
+    transactionId: 
+      in: path
+      name: transactionId
+      required: true
+      schema:
+        type: string
+        format: Mongo ObjectId
+        
+    stepAlias:
+      in: path
+      name: stepAlias
+      required: true
+      schema:
+        type: string
+        description: alias of the step from the stepschema
+        
+    transactionSchemaAlias:
+      in: path
+      name: transactionSchemaAlias
+      required: true
+      schema:
+        type: string
+        description: alias of the transactionSchema
+    
   
   schemas:
     OdatafyCount: 
@@ -496,4 +525,5 @@ components:
             email: 
               type: string
               example: 'peter@lustig.de'
+              
           
