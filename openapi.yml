@@ -240,7 +240,7 @@ paths:
  
     put:
       summary: submit transaction
-      description: submit transactions
+      description: submits the transaction to the target system and deletes it, if successful
       tags:
         - transactions
       parameters:
