@@ -110,7 +110,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  # Route for getting a stepschema
+  # TODO Route for getting a stepschema
   
   /transaction:
     post: 
@@ -134,16 +134,115 @@ paths:
                   transactionId: 
                     format: Mongo ObjectId
                     example: 507f1f77bcf86cd799439011
-                  stepSchema:
+                  nextStepSchema:
                     $ref: '#/components/schemas/StepSchema'
         400:
           $ref: '#/components/responses/BadRequest'
         500:
           $ref: '#/components/responses/InternalServerError'
           
-  # route for saving the data of a transaction step, returns the schema of the next step
-  # route for getting the data of a transaction step
-  # route for final submission of the transaction
+  # TODO add auth
+  /transaction/{transactionId}/step/{stepalias}:
+    post:
+      tags:
+        - transaction
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          schema:
+            type: string
+            format: Mongo ObjectId
+        - in: path
+          name: stepalias
+          required: true
+          schema:
+            type: string
+            description: alias of the step from the stepschema that the data is for
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              type: object
+              description: object according to the corresponding stepSchema
+        
+      
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  transactionId: 
+                    format: Mongo ObjectId
+                    example: 507f1f77bcf86cd799439011
+                  nextStepSchema:
+                    $ref: '#/components/schemas/StepSchema'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+          
+    get:
+      tags:
+        - transaction
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          schema:
+            type: string
+            format: Mongo ObjectId
+        - in: path
+          name: stepalias
+          required: true
+          schema:
+            type: string
+            description: alias of the step from the stepschema that the data is for
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object
+                description: 'object that might confirm to the stepSchema, but might not if changes in previous steps resulted in a change in the stepSchema of this step, but the data was not adjusted yet'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    
+  /transaction/{transactionId}/submit:
+    get:
+      tags:
+        - transaction
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          schema:
+            type: string
+            format: Mongo ObjectId
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  userInputsPdf: 
+                    type: string
+                    format: base64
+                    description: pdf with the user inputs for him/her to download
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      
+
   
 
 components:
@@ -306,6 +405,10 @@ components:
         type: 
           type: string
           example: ajv
+        ajv:
+          type: object
+          description: ajv
+          
           
     
     StepSchemaFileUpload: 
@@ -325,15 +428,18 @@ components:
         type: 
           type: string
           example: file_upload
-        requestedFilesHtml: 
-          type: string
-          format: html
-          example: 'Steuererklärung und Hausratversicherungsnachweis'
-        allowedFileExtensions: 
-          type: array
-          items:
-            type: string
-            example: '.heic'
+        ajv: 
+          type: object
+          description: ajv for file upload
+        #requestedFilesHtml: 
+        #  type: string
+        #  format: html
+        #  example: 'Steuererklärung und Hausratversicherungsnachweis'
+        #allowedFileExtensions: 
+        #  type: array
+        #  items:
+        #    type: string
+        #    example: '.heic'
           
         
           
@@ -354,11 +460,14 @@ components:
         type: 
           type: string
           example: terms_and_conditions
-        termsAndConditionsHtml: 
-          type: string
-          format: html
-          description: The terms and conditions to prompt the user with
-          example: 'Es werden personenbezogene Daten verarbeitet.<br/>Bitte stimmen Sie zu.'
+        ajv:
+          type: object
+          description: ajv for terms and conditions
+        #termsAndConditionsHtml: 
+        #  type: string
+        #  format: html
+        #  description: The terms and conditions to prompt the user with
+        #  example: 'Es werden personenbezogene Daten verarbeitet.<br/>Bitte stimmen Sie zu.'
           
     Transaction:
       type: object
