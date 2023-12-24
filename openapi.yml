@@ -17,6 +17,12 @@ tags:
   - name: receivers
     description: application receiving entities
     
+  - name: transactionschemas
+    description: schemas for transactions
+    
+  - name: transactions
+    description: transactions
+    
 paths:
   # healthchecks
   /health:
@@ -78,7 +84,67 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
           
-              
+
+  /transactionschemas/metadata:
+    get: 
+      tags: 
+        - transactionschemas
+      summary: query transactionschemas (odatafy enabled)
+      description: Queries transactionschemas.<br>Route is odatafy compatible. <br>Documentation and examples can be found <a href=http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html#sec_QueryOptions>here</a>.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionSchemaMetadata'
+                  count: 
+                    $ref: '#/components/schemas/OdatafyCount'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  # Route for getting a stepschema
+  
+  /transaction:
+    post: 
+      tags: 
+        - transactions
+      summary: create a transaction
+      description: creates a transaction for the given transactionSchema. Returns the created transactionId and the first StepSchema (Inspect Schema to see the variations of StepSchema like StepSchemaAjv).
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Transaction'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  transactionId: 
+                    format: Mongo ObjectId
+                    example: 507f1f77bcf86cd799439011
+                  stepSchema:
+                    $ref: '#/components/schemas/StepSchema'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+          
+  # route for saving the data of a transaction step, returns the schema of the next step
+  # route for getting the data of a transaction step
+  # route for final submission of the transaction
+  
 
 components:
 
@@ -118,10 +184,6 @@ components:
                 type: string
                 example: 'Internal Server Error'
                 description: error message
-    
-    
-      
-
   
   schemas:
     OdatafyCount: 
@@ -159,15 +221,40 @@ components:
     #            example: https://api.rd-eck.verwaltungscloud.sh/v1
     
     
-    TransactionMetaSchema: 
+    TransactionSchemaMetadata: 
       type: object
       properties: 
+        _id:
+          type: string
+          format: Mongo ObjectId
+          example: 507f1f77bcf86cd799439011
         name: 
           type: string
           example: 'Antrag auf Ermäßigung der Kita-Beiträge (Kurzversion)'
         alias: 
           type: string
           example: 'sozstafkitashort'
+        steps:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                format: Mongo ObjectId
+                example: 507f1f77bcf86cd799439011
+              alias: 
+                type: string
+                example: 'basedataapplicants'
+              name:
+                type: string
+                example: Grunddaten der Antragssteller
+              type: 
+                type: string
+                enum:
+                  - ajv
+                  - file_upload
+                  - terms_and_conditions
         stepCount:
           type: number
           description: '(max.) number of steps in the transaction'
@@ -175,3 +262,129 @@ components:
           type: string 
           description: URL for the transaction icon to be displayed
           example: https://minio-api.tools.verwaltungscloud.dev/verwaltungscloud-public-assets/LogoDL%20zoom.png
+          
+          
+    StepSchema:
+      oneOf:
+        - $ref: '#/components/schemas/StepSchemaAjv'
+        - $ref: '#/components/schemas/StepSchemaFileUpload'
+        - $ref: '#/components/schemas/StepSchemaTermsAndConditions'
+        - $ref: '#/components/schemas/StepSchemaSubmit'
+        
+    StepSchemaSubmit:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: Mongo ObjectId
+          example: 507f1f77bcf86cd799439011
+        name: 
+          type: string
+          example: Antrag absenden
+        alias: 
+          type: string
+          format: 'lowercase no spaces'
+          example: 'submit'
+        type: 
+          type: string
+          example: submit
+            
+    StepSchemaAjv: 
+      type: object
+      properties:
+        _id:
+          type: string
+          format: Mongo ObjectId
+          example: 507f1f77bcf86cd799439011
+        name: 
+          type: string
+          example: Grunddaten der Antragssteller
+        alias: 
+          type: string
+          format: 'lowercase no spaces'
+          example: 'basedataapplicants'
+        type: 
+          type: string
+          example: ajv
+          
+    
+    StepSchemaFileUpload: 
+      type: object
+      properties:
+        _id:
+          type: string
+          format: Mongo ObjectId
+          example: 507f1f77bcf86cd799439011
+        name: 
+          type: string
+          example: Einreichung von Nachweisen
+        alias: 
+          type: string
+          format: 'lowercase no spaces'
+          example: 'fileupload'
+        type: 
+          type: string
+          example: file_upload
+        requestedFilesHtml: 
+          type: string
+          format: html
+          example: 'Steuererklärung und Hausratversicherungsnachweis'
+        allowedFileExtensions: 
+          type: array
+          items:
+            type: string
+            example: '.heic'
+          
+        
+          
+    StepSchemaTermsAndConditions: 
+      type: object
+      properties:
+        _id:
+          type: string
+          format: Mongo ObjectId
+          example: 507f1f77bcf86cd799439011
+        name: 
+          type: string
+          example: Datenschutzhinweise
+        alias: 
+          type: string
+          format: 'lowercase no spaces'
+          example: 'dataprivacynote'
+        type: 
+          type: string
+          example: terms_and_conditions
+        termsAndConditionsHtml: 
+          type: string
+          format: html
+          description: The terms and conditions to prompt the user with
+          example: 'Es werden personenbezogene Daten verarbeitet.<br/>Bitte stimmen Sie zu.'
+          
+    Transaction:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: Mongo ObjectId
+          example: 507f1f77bcf86cd799439011
+        transactionSchemaAlias: 
+          type: string
+          example: sozstafkitashort
+          description: reference to the schema of the transaction
+        applicant:
+          type: object
+          properties:
+            firstName: 
+              type: string
+              example: Peter
+            lastName: 
+              type: string
+              example: Lustig
+            dateOfBirth: 
+              type: string 
+              format: 'Date'
+              example: '2003-01-10'
+            email: 
+              type: string
+              example: 'peter@lustig.de'
+          
