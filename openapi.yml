@@ -109,8 +109,6 @@ paths:
           $ref: '#/components/responses/BadRequest'
         500:
           $ref: '#/components/responses/InternalServerError'
-
-  # TODO Route to get a single transaction with auth
   
   /transactionschemas/{transactionSchemaAlias}/step/{stepAlias}/transaction/{transactionId}:
     get:
@@ -128,9 +126,6 @@ paths:
           content:
             application/json:
               schema: 
-                type: object
-                properties: 
-                  stepSchema:
                     $ref: '#/components/schemas/StepSchema'
         400:
           $ref: '#/components/responses/BadRequest'
@@ -168,9 +163,32 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
           
+  /transactions/{transactionId}:
+    get: 
+      tags: 
+        - transactions
+      summary: get a transaction
+      description: get a transaction (useful when continuing editing a transaction)
+      parameters:
+        - $ref: '#/components/parameters/transactionId'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                    $ref: '#/components/schemas/Transaction'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        
+          
   # TODO add auth
   /transactions/{transactionId}/step/{stepAlias}:
-    post:
+    put:
+      summary: save transaction step
+      description: saves a transaction step and returns the rendered schema for the next step
       tags:
         - transactions
       parameters:
@@ -190,13 +208,7 @@ paths:
           content:
             application/json:
               schema: 
-                type: object
-                properties: 
-                  transactionId: 
-                    format: Mongo ObjectId
-                    example: 507f1f77bcf86cd799439011
-                  nextStepSchema:
-                    $ref: '#/components/schemas/StepSchema'
+                $ref: '#/components/schemas/StepSchema'
         400:
           $ref: '#/components/responses/BadRequest'
         500:
