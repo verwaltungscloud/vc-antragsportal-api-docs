@@ -582,4 +582,5 @@ components:
     hashAuth:
       type: http
       scheme: bearer
+      description: 'SHA-256 Hash (10 Salts) of firstName, lastName, dateOfBirth(yyyy-mm-dd) of the applicant that created the transaction concatenated in that order without spaces. Example: Hash("PeterLustig2000-02-01")'
           
