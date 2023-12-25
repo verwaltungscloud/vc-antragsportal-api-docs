@@ -484,7 +484,7 @@ components:
           example: 'ajv'
         ajv:
           type: object
-          description: 'flat ajv'
+          description: '[ajv schema](https://ajv.js.org/json-schema.html)<br/> [Example](https://github.com/verwaltungscloud/vc-antragsportal-backend/blob/dev/ajvExamples.ts)'
           
           
     
@@ -507,7 +507,7 @@ components:
           example: file_upload
         ajv: 
           type: object
-          description: ajv for file upload
+          description: '[ajv schema](https://ajv.js.org/json-schema.html)<br/> [Example](https://github.com/verwaltungscloud/vc-antragsportal-backend/blob/dev/ajvExamples.ts)'
         #requestedFilesHtml: 
         #  type: string
         #  format: html
@@ -539,12 +539,8 @@ components:
           example: terms_and_conditions
         ajv:
           type: object
-          description: ajv for terms and conditions
-        #termsAndConditionsHtml: 
-        #  type: string
-        #  format: html
-        #  description: The terms and conditions to prompt the user with
-        #  example: 'Es werden personenbezogene Daten verarbeitet.<br/>Bitte stimmen Sie zu.'
+          description: '[ajv schema](https://ajv.js.org/json-schema.html)<br/> [Example](https://github.com/verwaltungscloud/vc-antragsportal-backend/blob/dev/ajvExamples.ts)'
+        
           
     Transaction:
       type: object
