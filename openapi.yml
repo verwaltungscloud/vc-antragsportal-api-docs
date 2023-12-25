@@ -109,9 +109,33 @@ paths:
           $ref: '#/components/responses/BadRequest'
         500:
           $ref: '#/components/responses/InternalServerError'
+          
+  /transactionschemas/{transactionSchemaAlias}/metadata:
+    get: 
+      tags: 
+        - transactionschemas
+      summary: get transactionschema metadata by alias
+      description: get transactionschema metadata by alias
+      parameters:
+        - $ref: '#/components/parameters/transactionSchemaAlias'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                      $ref: '#/components/schemas/TransactionSchemaMetadata'
+                  
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    
   
   /transactionschemas/{transactionSchemaAlias}/step/{stepAlias}/transaction/{transactionId}:
     get:
+      security:
+        - hashAuth: []
       tags:
         - transactionschemas
       parameters:
@@ -119,7 +143,7 @@ paths:
         - $ref: '#/components/parameters/stepAlias'
         - $ref: '#/components/parameters/transactionSchemaAlias'
       summary: render a stepschema
-      description: renders the schema for a step of a transactionschema to fit the current state of the transaction
+      description: renders the schema for a step of a transactionschema to fit the current state of a transaction
       responses:
         200:
           description: OK
@@ -165,6 +189,8 @@ paths:
           
   /transactions/{transactionId}:
     get: 
+      security:
+        - hashAuth: []
       tags: 
         - transactions
       summary: get a transaction
@@ -184,9 +210,11 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         
           
-  # TODO add auth
+  
   /transactions/{transactionId}/step/{stepAlias}:
     put:
+      security:
+        - hashAuth: []
       summary: save transaction step
       description: saves a transaction step and returns the rendered schema for the next step
       tags:
@@ -239,6 +267,8 @@ paths:
   /transactions/{transactionId}/submit:
  
     put:
+      security:
+        - hashAuth: []
       summary: submit transaction
       description: submits the transaction to the target system and deletes it, if successful
       tags:
@@ -331,9 +361,16 @@ components:
     
   
   schemas:
+  
+    Date:
+      type: string
+      format: Date
+      example: '2023-08-18T13:51:39.462Z'
+    
+  
     OdatafyCount: 
       type: number
-      description: number of total query results, regardless of the returned number of documents (useful for pagination)
+      description: 'number of total query results, regardless of the returned number of documents (useful for pagination)'
   
     ReceiverPublic:
       type: object
@@ -341,19 +378,19 @@ components:
         _id:
           type: string
           format: Mongo ObjectId
-          example: 507f1f77bcf86cd799439011
+          example: '507f1f77bcf86cd799439011'
         name: 
           type: string
           example: Amt Hüttener Berge
         alias:
           type: string
-          description: nickname of the receiver to match it with tenants in the target system
+          description: 'nickname of the receiver to match it with tenants in the target system'
           format: 'lowercase no spaces'
           example: amthb
         logoUrl: 
           type: string
-          description: URL for the receivers logo to be displayed
-          example: https://minio-api.tools.verwaltungscloud.dev/verwaltungscloud-public-assets/LogoDL%20zoom.png
+          description: 'URL for the receivers logo to be displayed'
+          example: 'https://minio-api.tools.verwaltungscloud.dev/verwaltungscloud-public-assets/LogoDL%20zoom.png'
           
     #Receiver:
     #  allOf: 
@@ -394,12 +431,6 @@ components:
               name:
                 type: string
                 example: Grunddaten der Antragssteller
-              type: 
-                type: string
-                enum:
-                  - ajv
-                  - file_upload
-                  - terms_and_conditions
         stepCount:
           type: number
           description: '(max.) number of steps in the transaction'
@@ -450,10 +481,10 @@ components:
           example: 'basedataapplicants'
         type: 
           type: string
-          example: ajv
+          example: 'ajv'
         ajv:
           type: object
-          description: ajv
+          description: 'flat ajv'
           
           
     
@@ -542,5 +573,13 @@ components:
             email: 
               type: string
               example: 'peter@lustig.de'
-              
+            createdAt:
+              $ref: '#/components/schemas/Date'
+            updatedAt: 
+              $ref: '#/components/schemas/Date'
+            
+  securitySchemes:
+    hashAuth:
+      type: http
+      scheme: bearer
           
