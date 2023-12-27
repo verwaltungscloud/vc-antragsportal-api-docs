@@ -142,8 +142,9 @@ paths:
         - $ref: '#/components/parameters/transactionId'
         - $ref: '#/components/parameters/stepAlias'
         - $ref: '#/components/parameters/transactionSchemaAlias'
+        - $ref: '#/components/parameters/skipMode'
       summary: render a stepschema
-      description: renders the schema for a step of a transactionschema to fit the current state of a transaction
+      description: renders the schema for a step of a transactionschema to fit the current state of a transaction.<br/> If the step is unnecessary and therefore skipped, the route returns the next necessary step in the direction specified in the query param.
       responses:
         200:
           description: OK
@@ -216,7 +217,7 @@ paths:
       security:
         - hashAuth: []
       summary: save transaction step
-      description: saves a transaction step and returns the rendered schema for the next step
+      description: saves a transaction step and returns the rendered schema for the next step.<br/> If the nexstep is unnecessary and therefore skipped, the route returns the next necessary step instead.
       tags:
         - transactions
       parameters:
@@ -334,6 +335,7 @@ components:
                 example: 'Internal Server Error'
                 description: error message
   
+  
   parameters: 
     transactionId: 
       in: path
@@ -358,6 +360,16 @@ components:
       schema:
         type: string
         description: alias of the transactionSchema
+    
+    skipMode:
+      in: query
+      name: skipMode
+      required: false
+      schema:
+        type: string
+        enum: ['next','previous']
+        default: 'next'
+        description: if the requested step is skipped, the backend will return the next / previous step instead
     
   
   schemas:
