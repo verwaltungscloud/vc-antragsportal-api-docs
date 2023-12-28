@@ -85,9 +85,8 @@ paths:
           $ref: '#/components/responses/InternalServerError'
           
 
-  /transactionschemas/metadata:
+  /transactionschemas:
     get: 
-      deprecated: true
       tags: 
         - transactionschemas
       summary: query transactionschemas (odatafy enabled)
@@ -103,7 +102,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TransactionSchemaMetadata'
+                      $ref: '#/components/schemas/TransactionSchema'
                   count: 
                     $ref: '#/components/schemas/OdatafyCount'
         400:
@@ -111,13 +110,12 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
           
-  /transactionschemas/{transactionSchemaAlias}/metadata:
+  /transactionschemas/alias/{transactionSchemaAlias}:
     get: 
-      deprecated: true
       tags: 
         - transactionschemas
-      summary: get transactionschema metadata by alias
-      description: get transactionschema metadata by alias
+      summary: get transactionschema  by alias
+      description: get transactionschema  by alias
       parameters:
         - $ref: '#/components/parameters/transactionSchemaAlias'
       responses:
@@ -126,7 +124,7 @@ paths:
           content:
             application/json:
               schema:
-                      $ref: '#/components/schemas/TransactionSchemaMetadata'
+                      $ref: '#/components/schemas/TransactionSchema'
                   
         400:
           $ref: '#/components/responses/BadRequest'
@@ -134,9 +132,8 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     
   
-  /transactionschemas/{transactionSchemaAlias}/step/{stepAlias}/transaction/{transactionId}:
+  /transactionschemas/alias/{transactionSchemaAlias}/step/{stepAlias}/transaction/{transactionId}:
     get:
-      deprecated: true
       security:
         - hashAuth: []
       tags:
@@ -419,7 +416,7 @@ components:
         
     
     
-    TransactionSchemaMetadata: 
+    TransactionSchema: 
       type: object
       properties: 
         _id:
@@ -432,30 +429,8 @@ components:
         alias: 
           type: string
           example: 'sozstafkitashort'
-        steps:
-          type: array
-          items:
-            type: object
-            properties:
-              _id:
-                type: string
-                format: Mongo ObjectId
-                example: 507f1f77bcf86cd799439011
-              alias: 
-                type: string
-                example: 'basedataapplicants'
-              name:
-                type: string
-                example: Grunddaten der Antragssteller
-
-        iconUrl: 
-          type: string 
-          description: URL for the transaction icon to be displayed
-          example: https://minio-api.tools.verwaltungscloud.dev/verwaltungscloud-public-assets/LogoDL%20zoom.png
-        targetSystemSubmitURL: 
-          type: string
-          description:  URL of the target system to send the final submission to (handled by backend)
-          example: https://api.rd-eck.verwaltungscloud.sh/v1/ozg/submit
+            
+        
           
           
     StepSchema:
@@ -472,16 +447,21 @@ components:
           type: string
           format: Mongo ObjectId
           example: 507f1f77bcf86cd799439011
-        name: 
+        stepName: 
           type: string
           example: Antrag absenden
-        alias: 
+        stepAlias: 
           type: string
           format: 'lowercase no spaces'
           example: 'submit'
         type: 
           type: string
           example: submit
+        targetSystemSubmitURL: 
+          type: string
+          description:  URL of the target system to send the final submission to (handled by backend)
+          example: https://api.rd-eck.verwaltungscloud.sh/v1/ozg/submit
+        
             
     StepSchemaAjv: 
       type: object
@@ -490,10 +470,10 @@ components:
           type: string
           format: Mongo ObjectId
           example: 507f1f77bcf86cd799439011
-        name: 
+        stepName: 
           type: string
           example: Grunddaten der Antragssteller
-        alias: 
+        stepAlias: 
           type: string
           format: 'lowercase no spaces'
           example: 'basedataapplicants'
@@ -503,6 +483,10 @@ components:
         ajv:
           type: object
           description: '[ajv schema](https://ajv.js.org/json-schema.html)<br/> [Example](https://github.com/verwaltungscloud/vc-antragsportal-backend/blob/dev/ajvExamples.ts)'
+        renderingStrategy:   
+          type: string
+          format: stepSchemaRenderingStrategyName
+          example: strategy to render the stepschema
           
           
     
@@ -513,10 +497,10 @@ components:
           type: string
           format: Mongo ObjectId
           example: 507f1f77bcf86cd799439011
-        name: 
+        stepName: 
           type: string
           example: Einreichung von Nachweisen
-        alias: 
+        stepAlias: 
           type: string
           format: 'lowercase no spaces'
           example: 'fileupload'
@@ -526,6 +510,7 @@ components:
         ajv: 
           type: object
           description: '[ajv schema](https://ajv.js.org/json-schema.html)<br/> [Example](https://github.com/verwaltungscloud/vc-antragsportal-backend/blob/dev/ajvExamples.ts)'
+
           
         
           
@@ -536,10 +521,10 @@ components:
           type: string
           format: Mongo ObjectId
           example: 507f1f77bcf86cd799439011
-        name: 
+        stepName: 
           type: string
           example: Datenschutzhinweise
-        alias: 
+        stepAlias: 
           type: string
           format: 'lowercase no spaces'
           example: 'dataprivacynote'
@@ -549,6 +534,7 @@ components:
         ajv:
           type: object
           description: '[ajv schema](https://ajv.js.org/json-schema.html)<br/> [Example](https://github.com/verwaltungscloud/vc-antragsportal-backend/blob/dev/ajvExamples.ts)'
+
         
           
     Transaction:
