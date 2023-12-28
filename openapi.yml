@@ -87,6 +87,7 @@ paths:
 
   /transactionschemas/metadata:
     get: 
+      deprecated: true
       tags: 
         - transactionschemas
       summary: query transactionschemas (odatafy enabled)
@@ -112,6 +113,7 @@ paths:
           
   /transactionschemas/{transactionSchemaAlias}/metadata:
     get: 
+      deprecated: true
       tags: 
         - transactionschemas
       summary: get transactionschema metadata by alias
@@ -134,6 +136,7 @@ paths:
   
   /transactionschemas/{transactionSchemaAlias}/step/{stepAlias}/transaction/{transactionId}:
     get:
+      deprecated: true
       security:
         - hashAuth: []
       tags:
@@ -161,6 +164,7 @@ paths:
   
   /transactions:
     post: 
+      deprecated: true
       tags: 
         - transactions
       summary: create a transaction
@@ -190,6 +194,7 @@ paths:
           
   /transactions/{transactionId}:
     get: 
+      deprecated: true
       security:
         - hashAuth: []
       tags: 
@@ -214,6 +219,7 @@ paths:
   
   /transactions/{transactionId}/step/{stepAlias}:
     put:
+      deprecated: true
       security:
         - hashAuth: []
       summary: save transaction step
@@ -244,6 +250,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
           
     get:
+      deprecated: true
       summary: get transaction step
       description: get transaction step
       tags:
@@ -268,6 +275,7 @@ paths:
   /transactions/{transactionId}/submit:
  
     put:
+      deprecated: true
       security:
         - hashAuth: []
       summary: submit transaction
