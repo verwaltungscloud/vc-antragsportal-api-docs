@@ -76,7 +76,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/ReceiverPublic'
+                      $ref: '#/components/schemas/Receiver'
                   count: 
                     $ref: '#/components/schemas/OdatafyCount'
         400:
@@ -384,7 +384,7 @@ components:
       type: number
       description: 'number of total query results, regardless of the returned number of documents (useful for pagination)'
   
-    ReceiverPublic:
+    Receiver:
       type: object
       properties:
         _id:
@@ -403,16 +403,12 @@ components:
           type: string
           description: 'URL for the receivers logo to be displayed'
           example: 'https://minio-api.tools.verwaltungscloud.dev/verwaltungscloud-public-assets/LogoDL%20zoom.png'
-          
-    #Receiver:
-    #  allOf: 
-    #      - $ref: '#/components/schemas/ReceiverPublic'
-    #      - type: object
-    #        properties: 
-    #          submissionTargetApiBaseUrl: 
-    #            type: string
-    #            description: Base URL of the API in the target system to# send the final submission t#o
-    #            example: https://api.rd-eck.verwaltungscloud.sh/v1
+      required: 
+        - id
+        - name
+        - alias
+        - logoUrl
+        
     
     
     TransactionSchemaMetadata: 
@@ -443,13 +439,15 @@ components:
               name:
                 type: string
                 example: Grunddaten der Antragssteller
-        stepCount:
-          type: number
-          description: '(max.) number of steps in the transaction'
+
         iconUrl: 
           type: string 
           description: URL for the transaction icon to be displayed
           example: https://minio-api.tools.verwaltungscloud.dev/verwaltungscloud-public-assets/LogoDL%20zoom.png
+        targetSystemSubmitURL: 
+          type: string
+          description:  URL of the target system to send the final submission to (handled by backend)
+          example: https://api.rd-eck.verwaltungscloud.sh/v1/ozg/submit
           
           
     StepSchema:
@@ -520,15 +518,6 @@ components:
         ajv: 
           type: object
           description: '[ajv schema](https://ajv.js.org/json-schema.html)<br/> [Example](https://github.com/verwaltungscloud/vc-antragsportal-backend/blob/dev/ajvExamples.ts)'
-        #requestedFilesHtml: 
-        #  type: string
-        #  format: html
-        #  example: 'Steuererklärung und Hausratversicherungsnachweis'
-        #allowedFileExtensions: 
-        #  type: array
-        #  items:
-        #    type: string
-        #    example: '.heic'
           
         
           
