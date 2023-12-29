@@ -140,16 +140,15 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     
   
-  /transactionschemas/alias/{transactionSchemaAlias}/step/{stepAlias}/transaction/{transactionId}:
+  /transactionschemas/alias/{transactionSchemaAlias}/step/{stepSchemaAlias}/transaction/{transactionId}:
     get:
-      deprecated: true
       security:
         - hashAuth: []
       tags:
         - transactionschemas
       parameters:
         - $ref: '#/components/parameters/transactionId'
-        - $ref: '#/components/parameters/stepAlias'
+        - $ref: '#/components/parameters/stepSchemaAlias'
         - $ref: '#/components/parameters/transactionSchemaAlias'
         - $ref: '#/components/parameters/skipMode'
       summary: render a stepschema
@@ -223,7 +222,7 @@ paths:
         
           
   
-  /transactions/{transactionId}/step/{stepAlias}:
+  /transactions/{transactionId}/step/{stepSchemaAlias}:
     put:
       deprecated: true
       security:
@@ -234,7 +233,7 @@ paths:
         - transactions
       parameters:
         - $ref: '#/components/parameters/transactionId'
-        - $ref: '#/components/parameters/stepAlias'
+        - $ref: '#/components/parameters/stepSchemaAlias'
       requestBody:
         content:
           application/json:
@@ -263,7 +262,7 @@ paths:
         - transactions
       parameters:
         - $ref: '#/components/parameters/transactionId'
-        - $ref: '#/components/parameters/stepAlias'
+        - $ref: '#/components/parameters/stepSchemaAlias'
       responses:
         200:
           description: OK
@@ -359,9 +358,9 @@ components:
         type: string
         format: Mongo ObjectId
         
-    stepAlias:
+    stepSchemaAlias:
       in: path
-      name: stepAlias
+      name: stepSchemaAlias
       required: true
       schema:
         type: string
@@ -464,7 +463,7 @@ components:
         stepName: 
           type: string
           example: Antrag absenden
-        stepAlias: 
+        stepSchemaAlias: 
           type: string
           format: 'lowercase no spaces'
           example: 'submit'
@@ -487,7 +486,7 @@ components:
         stepName: 
           type: string
           example: Grunddaten der Antragssteller
-        stepAlias: 
+        stepSchemaAlias: 
           type: string
           format: 'lowercase no spaces'
           example: 'basedataapplicants'
@@ -514,7 +513,7 @@ components:
         stepName: 
           type: string
           example: Einreichung von Nachweisen
-        stepAlias: 
+        stepSchemaAlias: 
           type: string
           format: 'lowercase no spaces'
           example: 'fileupload'
@@ -538,7 +537,7 @@ components:
         stepName: 
           type: string
           example: Datenschutzhinweise
-        stepAlias: 
+        stepSchemaAlias: 
           type: string
           format: 'lowercase no spaces'
           example: 'dataprivacynote'
