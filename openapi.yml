@@ -169,7 +169,6 @@ paths:
   
   /transactions:
     post: 
-      deprecated: true
       tags: 
         - transactions
       summary: create a transaction
@@ -190,7 +189,7 @@ paths:
                   transactionId: 
                     format: Mongo ObjectId
                     example: 507f1f77bcf86cd799439011
-                  stepSchema:
+                  firstStepSchema:
                     $ref: '#/components/schemas/StepSchema'
         400:
           $ref: '#/components/responses/BadRequest'
@@ -199,7 +198,6 @@ paths:
           
   /transactions/{transactionId}:
     get: 
-      deprecated: true
       security:
         - hashAuth: []
       tags: 
@@ -224,7 +222,6 @@ paths:
   
   /transactions/{transactionId}/step/{stepSchemaAlias}:
     put:
-      deprecated: true
       security:
         - hashAuth: []
       summary: save transaction step
@@ -251,13 +248,15 @@ paths:
                 $ref: '#/components/schemas/StepSchema'
         400:
           $ref: '#/components/responses/BadRequest'
+        406: 
+          description: 'No data shall be saved for this step. This can be due to the step being skipped or the step being submit.'
         500:
           $ref: '#/components/responses/InternalServerError'
+        
           
     get:
-      deprecated: true
-      summary: get transaction step
-      description: get transaction step
+      summary: get transaction step data
+      description: get transaction step data
       tags:
         - transactions
       parameters:
@@ -273,6 +272,10 @@ paths:
                 description: 'object that might confirm to the stepSchema, but might not if changes in previous steps resulted in a change in the stepSchema of this step, but the data was not adjusted yet'
         400:
           $ref: '#/components/responses/BadRequest'
+        404: 
+          description: StepSchemaAlias was not found in TransactionSchema and therefore is invalid.
+        409:
+          description: 'No Data found for this step, but the StepSchemaAlias is valid. This might mean that the step was previously skipped or that no data was saved yet'
         500:
           $ref: '#/components/responses/InternalServerError'
     
@@ -586,5 +589,5 @@ components:
     hashAuth:
       type: http
       scheme: bearer
-      description: 'SHA-256 Hash (10 Salts) of firstName, lastName, dateOfBirth(yyyy-mm-dd) of the applicant that created the transaction concatenated in that order without spaces. Example: Hash("PeterLustig2000-02-01")'
+      description: 'Bcrypt Hash (10 Salts) of firstName, lastName, dateOfBirth.toIsoString() of the applicant that created the transaction concatenated in that order without spaces. Example: Hash("PeterLustig2000-01-02T00:00:00.000Z")'
           
