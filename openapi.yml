@@ -562,7 +562,7 @@ components:
           example: 507f1f77bcf86cd799439011
         transactionSchemaAlias: 
           type: string
-          example: sozstafkitashort
+          example: example
           description: reference to the schema of the transaction
         applicant:
           type: object
@@ -576,7 +576,7 @@ components:
             dateOfBirth: 
               type: string 
               format: 'Date'
-              example: '2003-01-10'
+              example: '2000-01-02'
             email: 
               type: string
               example: 'peter@lustig.de'
