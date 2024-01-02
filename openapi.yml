@@ -85,7 +85,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
           
 
-  /transactionschemas:
+  /transactionschemas/metadata:
     get: 
       tags: 
         - transactionschemas
@@ -118,7 +118,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
           
-  /transactionschemas/alias/{transactionSchemaAlias}:
+  /transactionschemas/metadata/alias/{transactionSchemaAlias}:
     get: 
       tags: 
         - transactionschemas
