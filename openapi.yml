@@ -10,6 +10,7 @@ info:
 
 servers:
   - url: https://api.antrag.dev.verwaltungs.cloud/v1
+  - url: http://localhost:4000/v1
 tags:
   - name: health
     description: Healthchecks
@@ -99,7 +100,7 @@ paths:
             type: string
             format: receiveralias
             description: filters transactionschemas by the presence of the specified receiveralias in the receivers array (currently not supported by odatafy)
-        - $ref: '#/components/parameters/hideStepSchemas'
+        - $ref: '#/components/parameters/showStepSchemas'
       responses:
         200:
           description: OK
@@ -127,7 +128,7 @@ paths:
       description: get transactionschema  by alias
       parameters:
         - $ref: '#/components/parameters/transactionSchemaAlias'
-        - $ref: '#/components/parameters/hideStepSchemas'
+        - $ref: '#/components/parameters/showStepSchemas'
       responses:
         200:
           description: OK
@@ -389,9 +390,9 @@ components:
         default: 'next'
         description: if the requested step is skipped, the backend will return the next / previous step instead
     
-    hideStepSchemas:
+    showStepSchemas:
       in: query
-      name: hideStepSchemas
+      name: showStepSchemas
       required: false
       schema: 
         type: boolean
