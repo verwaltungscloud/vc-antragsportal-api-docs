@@ -407,6 +407,7 @@ components:
         _id:
           type: string
           format: Mongo ObjectId
+          readOnly: true
           example: '507f1f77bcf86cd799439011'
         name: 
           type: string
@@ -433,6 +434,7 @@ components:
       properties: 
         _id:
           type: string
+          readOnly: true
           format: Mongo ObjectId
           example: 507f1f77bcf86cd799439011
         name: 
@@ -463,6 +465,7 @@ components:
         _id:
           type: string
           format: Mongo ObjectId
+          readOnly: true
           example: 507f1f77bcf86cd799439011
         stepName: 
           type: string
@@ -486,6 +489,7 @@ components:
         _id:
           type: string
           format: Mongo ObjectId
+          readOnly: true
           example: 507f1f77bcf86cd799439011
         stepName: 
           type: string
@@ -513,6 +517,7 @@ components:
         _id:
           type: string
           format: Mongo ObjectId
+          readOnly: true
           example: 507f1f77bcf86cd799439011
         stepName: 
           type: string
@@ -537,6 +542,7 @@ components:
         _id:
           type: string
           format: Mongo ObjectId
+          readOnly: true
           example: 507f1f77bcf86cd799439011
         stepName: 
           type: string
@@ -561,6 +567,7 @@ components:
           type: string
           format: Mongo ObjectId
           example: 507f1f77bcf86cd799439011
+          readOnly: true
         transactionSchemaAlias: 
           type: string
           example: example
