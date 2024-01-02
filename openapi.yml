@@ -393,6 +393,7 @@ components:
     Date:
       type: string
       format: Date
+      readOnly: true
       example: '2023-08-18T13:51:39.462Z'
     
   
@@ -564,8 +565,12 @@ components:
           type: string
           example: example
           description: reference to the schema of the transaction
+        lastModifiedStepSchemaAlias:
+          type: string
+          example: dataprivacy
         applicant:
           type: object
+          writeOnly: true
           properties:
             firstName: 
               type: string
