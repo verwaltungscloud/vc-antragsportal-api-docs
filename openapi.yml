@@ -124,8 +124,8 @@ paths:
     get: 
       tags: 
         - transactionschemas
-      summary: get transactionschema  by alias
-      description: get transactionschema  by alias
+      summary: get transactionschema by alias
+      description: get transactionschema by alias. Also returns the metadata for the stepSchemas
       parameters:
         - $ref: '#/components/parameters/transactionSchemaAlias'
         - $ref: '#/components/parameters/showStepSchemas'
@@ -135,7 +135,7 @@ paths:
           content:
             application/json:
               schema:
-                      $ref: '#/components/schemas/TransactionSchema'
+                $ref: '#/components/schemas/TransactionSchemaWithStepMetadata'
                   
         400:
           $ref: '#/components/responses/BadRequest'
@@ -459,6 +459,28 @@ components:
           items:
             type: string
             format: receiverAlias
+          
+    StepSchemaMetadata:
+      type: object
+      properties:
+        stepSchemaMetadata:
+          type: array
+          items: 
+            type: object
+            properties: 
+              stepSchemaIndex: 
+                type: number
+              stepSchemaName: 
+                type: string
+                example: Datenschutzbestimmungen
+              stepSchemaAlias: 
+                type: string
+                example: dataprivacy
+            
+    TransactionSchemaWithStepMetadata:
+      allOf:
+        - $ref: '#/components/schemas/TransactionSchema'
+        - $ref: '#/components/schemas/StepSchemaMetadata'
             
         
           
