@@ -167,6 +167,30 @@ paths:
           $ref: '#/components/responses/BadRequest'
         500:
           $ref: '#/components/responses/InternalServerError'
+          
+  /transactionschemas/alias/{transactionSchemaAlias}/step/{stepSchemaAlias}/transaction/{transactionId}/previous:
+    get:
+      security:
+        - hashAuth: []
+      tags:
+        - transactionschemas
+      parameters:
+        - $ref: '#/components/parameters/transactionId'
+        - $ref: '#/components/parameters/stepSchemaAlias'
+        - $ref: '#/components/parameters/transactionSchemaAlias'
+      summary: render a stepschema
+      description: renders the schema for the previous step of a transactionschema to fit the current state of a transaction.<br/> If the step is unnecessary and therefore skipped, the route returns the first necessary step from the previous steps.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: 
+                    $ref: '#/components/schemas/StepSchema'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
       
   
   
